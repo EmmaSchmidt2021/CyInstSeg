@@ -63,7 +63,16 @@ def resize_with_padding(img, expected_size):
 #     img.show()
 #     newimg = img.save("resized_img.png")
 #     print(newimg.size)
-    
+
+# read uint8 into numpy array
+import numpy as np
+from keras.preprocessing.image import array_to_img
+
+with open('101934 y0 t3 Cyst ROI Left 8bit 137 178 96', "rb") as infile:
+    data = np.fromfile(infile, dtype = 'uint8').reshape(137,178,96)
+    single_slice = data[:,:,15]
+    b=array_to_img(single_slice)
+b
 
 #use glob to create a batch of images out of all the files in our current directory
 # if errors - change working directory in spyder itself
@@ -76,7 +85,6 @@ for image in images:
     #filename = 
     #os.makedirs(os.path.dirname(filename), exist_ok=True)
     img.save("C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/CYR/"+image)
-
 
 
 
