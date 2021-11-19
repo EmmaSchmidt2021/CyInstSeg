@@ -66,13 +66,13 @@ def resize_with_padding(img, expected_size):
 
 # read uint8 into numpy array
 import numpy as np
-from keras.preprocessing.image import array_to_img
+from PIL import Image as im
 
-with open('101934 y0 t3 Cyst ROI Left 8bit 137 178 96', "rb") as infile:
-    data = np.fromfile(infile, dtype = 'uint8').reshape(137,178,96)
-    single_slice = data[:,:,15]
-    b=array_to_img(single_slice)
-b
+with open('101934 y0 t3 Cyst ROI Right 8bit 125 221 96', "rb") as infile:
+    data = np.fromfile(infile, dtype = 'uint8').reshape(96,221,125)
+    single_slice_right = data[45]
+    a=im.fromarray(single_slice_right)
+a
 
 #use glob to create a batch of images out of all the files in our current directory
 # if errors - change working directory in spyder itself
