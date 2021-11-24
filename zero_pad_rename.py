@@ -4,35 +4,26 @@ Created on Tue Nov  2 13:45:07 2021
 
 @author: emmasch
 """
-# way to display uint8 image:
-from PIL import Image, ImageOps
+# load in the ImageJ raw format 
+# size of the cropped image and main subject is located in the title
+# extract sizing, zero pad all images, rename, and save as .npy files that can then be converted into nifti
+
+# load in libraries
+from PIL import Image as im
+from PIL import ImageOps
 import numpy as np
 import os
-import glob
+import fnmatch
+import nibabel as nib
 
-# check ability to load in filepath, image, and array
-im = Image.open(r"C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/CYR/CY_101934-3-R02.png")
-imarray = np.array(Image.open(r"C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/101934 y0 t3.tif"))
+# define paths
+path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Pt 101934/dciacj"
+new_path ="C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Resized"
+# determine our final padding size
+new_size = 250
 
-#check out sizing 
-print(type(im))
-print(type(imarray))
-# <class 'numpy.ndarray'>
-
-print(imarray.dtype)
-# uint16
-
-print(imarray.shape)
-print(im.size)
-# (225, 400, 3)
-
-
-# define path
-im_path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/sequence"
-
-#_______________determine new size____________________
-new_size = 350
-
+# create two functions - one to determine the appropriate size, and one to pad
+#%%
 # figure out difference that needs to be made up in rows/columns
 def padding(img, expected_size):
     desired_size = expected_size
@@ -54,7 +45,7 @@ def resize_with_padding(img, expected_size):
     padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
     return ImageOps.expand(img, padding)
 
-#---- only run this when checking the initial resize
+#--- check that functions work as we expect
 # if __name__ == "__main__":
 #     img = Image.open(r"C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/sequence/CY_101934-3-R22.png")
 #     print(img)
@@ -64,33 +55,46 @@ def resize_with_padding(img, expected_size):
 #     newimg = img.save("resized_img.png")
 #     print(newimg.size)
 
-# read uint8 into numpy array
-import numpy as np
-from PIL import Image as im
 
-with open('101934 y0 t3 Cyst ROI Right 8bit 125 221 96', "rb") as infile:
-    data = np.fromfile(infile, dtype = 'uint8').reshape(96,221,125)
-    single_slice_right = data[45]
-    a=im.fromarray(single_slice_right)
-a
+#%%
+# define the phrase we are searching through the folder for
+# generate a list of the files we want to edit
+ROI_name = 'ROI'  
+ROI_list = [] #generate a blank list to fill in
+for fname in os.listdir(path):
+    if ROI_name in fname:
+        ROI_list.append(fname)
 
-#use glob to create a batch of images out of all the files in our current directory
-# if errors - change working directory in spyder itself
-
-images = glob.glob(im_path, "*.png")
-for image in images:
-    img = Image.open(image)
-    img = resize_with_padding(img, (new_size, new_size))
-    #move to this new folder
-    #filename = 
-    #os.makedirs(os.path.dirname(filename), exist_ok=True)
-    img.save("C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/CYR/"+image)
-
-
-
+#%%
+# loop through our generated list and resize, saving in our new path
+resized = np.zeros((num_slice,new_size,new_size), dtype ='uint8') #preallocate array
+for i in range(len(ROI_list)): # loop through all the available files from the list that had our keyword
+    orig_fname = ROI_list[i] # grab the ith filename in the list
+    #find the dimmensions from the filename
+    num_slice = int(orig_fname[-2:])
+    num_width = int((orig_fname[-7:-3]))
+    num_height = int((orig_fname[-11:-7]))
+    call_file = str(path+'/'+orig_fname) #define our filename with path to open
     
-    
-    
+    with open(r'%s' %call_file, 'rb') as file: #read in raw uint8 and resize correctly
+         data = np.fromfile(file, dtype = 'uint8').reshape(num_slice,num_width,num_height)
+         for i in range(num_slice):
+             orig_slice = data[i]
+             re_slice = im.fromarray(orig_slice)
+             resized[i] = resize_with_padding(re_slice, (new_size, new_size))
+             # now we need to rename this resized array and save it as a .npy
+    new_fname = str('%s' %orig_fname + '_RESIZED_') #keep the original name for now 
+    file_name = "%s.npy" %new_fname # add our extension
+    np.save(os.path.join(new_path, file_name), resized) # save in the new file folder
+#%% --check that we can load in arrays and nothing got messed up in the save
+#load in .npy arrays 
+
+e_array = np.load(str(new_path+'/'+file_name))
+e = im.fromarray(e_array[60])
+e
+
+
+#%%
 ##______now make into nifti files            
          
     %step 1: get the names of the files
