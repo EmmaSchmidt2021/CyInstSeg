@@ -17,13 +17,14 @@ import fnmatch
 import nibabel as nib
 
 # define paths
-path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Pt 101934/dciacj"
+path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Small"
 new_path ="C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Resized"
 # determine our final padding size
 new_size = 250
 
+#%%   
 # create two functions - one to determine the appropriate size, and one to pad
-#%%
+
 # figure out difference that needs to be made up in rows/columns
 def padding(img, expected_size):
     desired_size = expected_size
@@ -54,28 +55,62 @@ def resize_with_padding(img, expected_size):
 #     img.show()
 #     newimg = img.save("resized_img.png")
 #     print(newimg.size)
+#%%
+# Create a list of the folders we want to walk through to call later
+working_path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Small"
+patient_folders = []
+pt_fnames = []
 
+import os
+for root, dirs, files in os.walk(os.path.normpath(working_path), topdown=True):
+    for name in files:
+        print(os.path.join(root, name))
+        pt_fnames.append(os.path.join(root, name))
+    # for name in dirs:
+    #     print(os.path.join(root, name))
+    #     patient_folders.append(os.path.join(root, name))
+print('\nPatient Folders have been identified\n')
+
+          ROI_list.append(fname)
 
 #%%
-# define the phrase we are searching through the folder for
-# generate a list of the files we want to edit
-ROI_name = 'ROI'  
-ROI_list = [] #generate a blank list to fill in
-for fname in os.listdir(path):
-    if ROI_name in fname:
-        ROI_list.append(fname)
+# filename = os.path.basename(pt_fnames[1])
+# print(filename)
 
+#sort through and get only the files with ROI in them
+#this eliminates the tiff and 3D files 
+ROI_list = []
+for i in range(len(pt_fnames)):
+    ROI_name = 'ROI'
+    filename = os.path.basename(pt_fnames[i])
+    if ROI_name in filename:
+        ROI_list.append(pt_fnames[i])
+print('\nFilenames have been found and added\n')
+
+   
 #%%
-# loop through our generated list and resize, saving in our new path
-resized = np.zeros((num_slice,new_size,new_size), dtype ='uint8') #preallocate array
+# loop through our generated list and resize, saving the new image in our output path
+
+resized = np.zeros((96,new_size,new_size), dtype ='uint8') #preallocate array
 for i in range(len(ROI_list)): # loop through all the available files from the list that had our keyword
-    orig_fname = ROI_list[i] # grab the ith filename in the list
-    #find the dimmensions from the filename
+    orig_fname = os.path.basename(ROI_list[i])# grab the ith filename in the list
+    #extract information from the filename
     num_slice = int(orig_fname[-2:])
     num_width = int((orig_fname[-7:-3]))
     num_height = int((orig_fname[-11:-7]))
-    call_file = str(path+'/'+orig_fname) #define our filename with path to open
-    
+    pt_numb =(orig_fname[0:6])
+    yr_numb = (orig_fname[8])
+    if 'Cyst' in orig_fname:
+        img_type = 'CY'
+    elif 'Kidney' in orig_fname:
+        img_type = 'K'
+    elif 'Image' in orig_fname:
+        img_type = 'MR'
+    if 'Right' in orig_fname:
+        side = 'R'
+    elif 'Left' in orig_fname:
+        side = 'L'
+    call_file = str(ROI_list[i]) #define our filename with path to open (working_path+'/'+orig_fname)
     with open(r'%s' %call_file, 'rb') as file: #read in raw uint8 and resize correctly
          data = np.fromfile(file, dtype = 'uint8').reshape(num_slice,num_width,num_height)
          for i in range(num_slice):
@@ -83,41 +118,45 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
              re_slice = im.fromarray(orig_slice)
              resized[i] = resize_with_padding(re_slice, (new_size, new_size))
              # now we need to rename this resized array and save it as a .npy
-    new_fname = str('%s' %orig_fname + '_RESIZED_') #keep the original name for now 
+    #new_fname = str('%s' %orig_fname + '_RESIZED_') #keep the original name for now 
+    new_fname = str(img_type +'_' + pt_numb +'_'+ yr_numb +'_'+ side)
     file_name = "%s.npy" %new_fname # add our extension
+    print('%s has been padded and renamed %s' %(orig_fname, new_fname))
     np.save(os.path.join(new_path, file_name), resized) # save in the new file folder
+    #will need to make new code to add the prefix names an organize into the appropriate folders
+    
 #%% --check that we can load in arrays and nothing got messed up in the save
 #load in .npy arrays 
 
-e_array = np.load(str(new_path+'/'+file_name))
-e = im.fromarray(e_array[60])
-e
+# e_array = np.load(str(new_path+'/'+file_name))
+# e = im.fromarray(e_array[60])
+# e
 
 
 #%%
 ##______now make into nifti files            
          
-    %step 1: get the names of the files
-            files=dir('*.png');
-            file_names={files.name}';
+  #   %step 1: get the names of the files
+  #           files=dir('*.png');
+  #           file_names={files.name}';
 
-    %step 2: sort the files
+  #   %step 2: sort the files
 
-            %extract the numbers
-            %Here, the format of the name shoul be enterd and %d should replate the
-            %number, this is so that the files will be load in the right order
-              filenum = cellfun(@(x)sscanf(x,'%d.png'), file_names);
-            % sort them, and get the sorting order
-              [~,Sidx] = sort(filenum) ;
-            % use to this sorting order to sort the filenames
-              SortedFilenames = file_names(Sidx);
+  #           %extract the numbers
+  #           %Here, the format of the name shoul be enterd and %d should replate the
+  #           %number, this is so that the files will be load in the right order
+  #             filenum = cellfun(@(x)sscanf(x,'%d.png'), file_names);
+  #           % sort them, and get the sorting order
+  #             [~,Sidx] = sort(filenum) ;
+  #           % use to this sorting order to sort the filenames
+  #             SortedFilenames = file_names(Sidx);
 
-   %step 3: combine images to single matrix:
-            %get number of files
-            num_of_files=numel(SortedFilenames);
-            for i=1:num_of_files
-                nifti_mat(:,:,i)=imread(SortedFilenames{i});
-            end
-  %step 4: conver to nifti and save:
-            filename='here_goes_the_name_of_the_file';
-            niftiwrite(nifti_mat,filename);
+  #  %step 3: combine images to single matrix:
+  #           %get number of files
+  #           num_of_files=numel(SortedFilenames);
+  #           for i=1:num_of_files
+  #               nifti_mat(:,:,i)=imread(SortedFilenames{i});
+  #           end
+  # %step 4: conver to nifti and save:
+  #           filename='here_goes_the_name_of_the_file';
+  #           niftiwrite(nifti_mat,filename);
