@@ -8,7 +8,7 @@ Created on Mon Jan 10 15:45:12 2022
 checking github connection//pushing
 """
 
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 import h5py 
 # https://docs.h5py.org/en/stable/quick.html -- documentation on loading in hdf5
 # https://docs.h5py.org/en/stable/high/file.html -- explanition of the 'file object' that was loaded in
@@ -98,9 +98,8 @@ from _3ch_instanceCystSeg_train_unet import get_unet
 model = get_unet()
 model.summary()
 
-
-
-
+from tensorflow.keras.models import load_model
+model = load_model('./instanceCystSeg_modelWeights_3ch_t001.hdf5', compile=False)
 
 
 
