@@ -19,11 +19,11 @@ print("libraries imported")
 
 
 #Edit the following two...
-input_folder='C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Train_Input' #Training data folder
-output_folder = 'C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Output'
+input_folder='' #Training data folder
+output_folder = ''
 
-image_folder = 'C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Train_Input/Image'
-seg_folder = 'C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Train_Input/Seg'
+image_folder = ''
+seg_folder = ''
 
 #names for corresponding files
 oriprefix = 'MR' # MR image extension

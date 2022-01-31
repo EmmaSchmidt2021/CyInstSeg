@@ -49,7 +49,7 @@ with h5py.File(filename, 'r') as f:
         print('Shape:', f[dset].shape)
         print('Data type:', f[dset].dtype)
 #not super helpful but worth a shot
-#%%save and load documentation from TensorFlos 
+#%%save and load documentation from TensorFlow 
 #https://www.tensorflow.org/tutorials/keras/save_and_load
 
 #%% import from unet_inception

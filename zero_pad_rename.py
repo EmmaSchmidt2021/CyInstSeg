@@ -71,7 +71,7 @@ for root, dirs, files in os.walk(os.path.normpath(working_path), topdown=True):
     #     patient_folders.append(os.path.join(root, name))
 print('\nPatient Folders have been identified\n')
 
-          ROI_list.append(fname)
+          #ROI_list.append(fname)
 
 #%%
 # filename = os.path.basename(pt_fnames[1])
@@ -134,29 +134,25 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
 
 
 #%%
-##______now make into nifti files            
-         
-  #   %step 1: get the names of the files
-  #           files=dir('*.png');
-  #           file_names={files.name}';
+##______now make into nifti files      
+import os
 
-  #   %step 2: sort the files
 
-  #           %extract the numbers
-  #           %Here, the format of the name shoul be enterd and %d should replate the
-  #           %number, this is so that the files will be load in the right order
-  #             filenum = cellfun(@(x)sscanf(x,'%d.png'), file_names);
-  #           % sort them, and get the sorting order
-  #             [~,Sidx] = sort(filenum) ;
-  #           % use to this sorting order to sort the filenames
-  #             SortedFilenames = file_names(Sidx);
+directory_path = r"C:\Users\UAB\CyInstSeg\Resized\MRimg"
+npy_files = []
 
-  #  %step 3: combine images to single matrix:
-  #           %get number of files
-  #           num_of_files=numel(SortedFilenames);
-  #           for i=1:num_of_files
-  #               nifti_mat(:,:,i)=imread(SortedFilenames{i});
-  #           end
-  # %step 4: conver to nifti and save:
-  #           filename='here_goes_the_name_of_the_file';
-  #           niftiwrite(nifti_mat,filename);
+for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):
+    for name in files:
+        npy_files.append(name)
+        
+#%%
+
+import nibabel as nib
+
+for i in range(len(npy_files)): 
+    filename = npy_files[i]
+    data = np.load(filename)
+    data = np.arange(250*250*96).reshape(250,250,96)
+    new_image = nib.Nifti1Image(data, affine=np.eye(250))
+    nib.save(new_image, "%s" %filename)
+    
