@@ -138,7 +138,7 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
 import os
 
 
-directory_path = r"C:\Users\UAB\CyInstSeg\Resized\MRimg"
+directory_path = r"C:\Users\UAB\CyInstSeg\Resized\Segment"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):
@@ -148,11 +148,15 @@ for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True)
 #%%
 
 import nibabel as nib
-
+import numpy as np
 for i in range(len(npy_files)): 
     filename = npy_files[i]
     data = np.load(filename)
     data = np.arange(250*250*96).reshape(250,250,96)
-    new_image = nib.Nifti1Image(data, affine=np.eye(250))
-    nib.save(new_image, "%s" %filename)
+    new_image = nib.Nifti1Image(data, affine=np.eye(4))
+    nib.save(new_image, "%s.nii" %filename)
     
+#%%
+img = nib.load("MR_101934_0_L.npy.nii")
+img.shape
+img.data
