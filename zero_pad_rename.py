@@ -138,7 +138,7 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
 import os
 
 
-directory_path = r"C:\Users\UAB\CyInstSeg\Resized\Segment"
+directory_path = r"C:\Users\UAB\CyInstSeg\Resized\MRimg"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):
@@ -156,7 +156,9 @@ for i in range(len(npy_files)):
     new_image = nib.Nifti1Image(data, affine=np.eye(4))
     nib.save(new_image, "%s.nii" %filename)
     
-#%%
+#%% check nifi file kept shape the same
 img = nib.load("MR_101934_0_L.npy.nii")
 img.shape
 img.data
+
+            

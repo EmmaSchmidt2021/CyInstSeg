@@ -9,7 +9,7 @@ from tqdm import *
 import h5py
 import os.path
 import cv2
-import skimage.transform as ski
+#import skimage.transform as ski
 import numpy as np
 import sys
 import nibabel as nib
@@ -19,11 +19,11 @@ print("libraries imported")
 
 
 #Edit the following two...
-input_folder='' #Training data folder
-output_folder = ''
+input_folder=r'C:\Users\UAB\CyInstSeg\Resized\Training' #Training data folder
+output_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training_Output'
 
-image_folder = ''
-seg_folder = ''
+image_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training\NII Images'
+seg_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training\NII Segments'
 
 #names for corresponding files
 oriprefix = 'MR' # MR image extension
@@ -32,8 +32,8 @@ cystprefix = 'CY' # Edge-Core segmentation extension
 strremove = -len(segprefix)
 
 #CHANGE MADE HERE THAT NEEDS TO BE ADDRESSED WHEN THE LARGER SET IS READY
-Scan = 137
-Scan2 = 178
+Scan = 250
+Scan2 = 250
 
 count = 0
 subdir, dirs, files = os.walk(input_folder).__next__()
