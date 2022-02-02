@@ -66,8 +66,8 @@ def rblock(inputs, num, depth, scale=0.1):
     res = _shortcut(inputs, residual)
     return ELU()(res) 
     
-#____________________________________________#
-#MAKING MAJOR ADJUSTMENT TO LOAD UNET
+#____________________________________________# Running into issue here
+
 
 def NConvolution2D(nb_filter, nb_row, nb_col, padding='same', subsample=(1, 1)):
     def f(_input):

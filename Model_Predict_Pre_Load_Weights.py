@@ -47,7 +47,7 @@ with h5py.File(filename, 'r') as f:
         print('Shape:', f[dset].shape)
         print('Data type:', f[dset].dtype)
 #not super helpful but worth a shot
-#%%save and load documentation from TensorFlos 
+#%%save and load documentation from TensorFlow 
 #https://www.tensorflow.org/tutorials/keras/save_and_load
 
 #%% import from unet_inception
@@ -59,7 +59,7 @@ from keras.layers.merge import concatenate, add
 from keras.layers.advanced_activations import ELU, LeakyReLU
 from metric import dice_coef, dice_coef_loss
 
-IMG_ROWS, IMG_COLS = 512,512
+IMG_ROWS, IMG_COLS = 250,250
 
 
 
@@ -83,8 +83,8 @@ from _3ch_instanceCystSeg_data_prepare_ALL_2d_n512 import load_train_data, load_
 K.set_image_data_format('channels_first') 
 # channels first means that it is looking for the information in this order
 # (batch, channels, height, width)
-img_rows = 512
-img_cols = 512
+img_rows = 250
+img_cols = 250
 
 
 smooth = 1.
@@ -120,6 +120,23 @@ def load_trained_model(weights_path):
    model.load_weights(weights_path)
 
 #%%
-loaded_model = tf.keras.models.load_model("model.h5")
+loaded_model = tf.keras.models.load_model("instanceCystSeg_modelWeights_3ch_t001.hdf5")
 loaded_model.build()
 loaded_model.summary()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

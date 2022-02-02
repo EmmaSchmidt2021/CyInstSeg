@@ -16,16 +16,16 @@ from tqdm import *
 import copy
 import sys
 sys.path.append(r'C:\Users\emmasch\Desktop\CystInstance\InstanceCystSeg-master\src')
-from Edge_Core_Labels_WatershedAndCC import instance_seg
+#from Edge_Core_Labels_WatershedAndCC import instance_seg
 from tensorflow.keras.optimizers import Adam
 #Add the .hdf5 names
 from _3ch_instanceCystSeg_train_unet import get_unet
 
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
-modelname2 = ''
-modelname3 = ''
-FOLDER = '' # Dataset folder
-oriprefix = '' # MR image extension
+#modelname2 = ''
+#modelname3 = ''
+FOLDER = 'C:\\Users\\UAB\\CyInstSeg\\Resized\\Training\\NII Images\\'
+#oriprefix = '_MR.npy.nii' # MR image extension
 
 #--------------------------
 # END USER INPUT
@@ -33,8 +33,8 @@ oriprefix = '' # MR image extension
 
 K.set_image_data_format('channels_first')
 
-img_rows = 512
-img_cols = 512
+img_rows = 250
+img_cols = 250
 
 smooth = 1.
 
@@ -45,11 +45,11 @@ image_folder = ''
 seg_folder = ''
 segout_folder = FOLDER
 
-oriprefix = 'MR_' # MR indetifier + extension
-kidneyprefix = 'K_' # Kidney segmentation indetifier + extension
-segprefix = 'CY_' + modelname1 + '' # add extension
+oriprefix = 'MR_.npy.nii' # MR indetifier + extension
+kidneyprefix = 'K_.npy.nii' # Kidney segmentation indetifier + extension
+segprefix = '_' + modelname1 + 'CY_PREDICTION.npy.nii' # add extension
 strremove = -len(oriprefix)
-Scan = 512
+Scan = 250
 count = 0
 
 try:
@@ -63,24 +63,24 @@ counter = 0
 
 model1 = get_unet()
 model1.load_weights(modelname1+'.hdf5') 
-model2 = get_unet()
-model2.load_weights(modelname2+'.hdf5') 
-model3 = get_unet()
-model3.load_weights(modelname3+'.hdf5') 
+#model2 = get_unet()
+#model2.load_weights(modelname2+'.hdf5') 
+#model3 = get_unet()
+#model3.load_weights(modelname3+'.hdf5') 
 				
 for filename in tqdm(files):
 	count+=1
 	if oriprefix in filename:     
 		if 'Seg' not in filename:
 			if 'unet4' not in filename: 
-				imgloaded = nib.load(input_folder+'/'+image_folder+'/'+filename)
+				imgloaded = nib.load(input_folder+'\\'+image_folder+'\\'+filename)
 				data = imgloaded.get_data()
 				print(type(data))
 				data=np.asarray(data).astype(np.float32)
 				data = data/np.percentile(data,99) * 255
 				data[data>255] = 255
 
-				segimg = nib.load(input_folder+'/'+image_folder+'/'+filename[:strremove]+kidneyprefix)
+				segimg = nib.load(input_folder+'\\'+image_folder+'\\'+filename[:strremove]+kidneyprefix)
 				segdata = segimg.get_data()
 				segdata[segdata>1]=1
 				segdata = np.asarray(segdata).astype(np.float32)
@@ -140,49 +140,49 @@ for filename in tqdm(files):
 				print(np.min(img),np.max(img))
 				print(np.mean(img),np.std(img))
 
-				y_proba1 = model1.predict(img)
+				y_proba1 = model1.predict(img)#_______ send to predict with one model
 				print(np.shape(y_proba1))
-				print(np.sum(y_proba1[:,0,:,:]))
-				print(np.sum(y_proba1[:,1,:,:]))
-				print(np.sum(y_proba1[:,2,:,:]))
+				print(np.sum(y_proba1[:,0,:,:]))#background
+				print(np.sum(y_proba1[:,1,:,:]))#core
+				print(np.sum(y_proba1[:,2,:,:]))#edge
 				imgs_mask_test1 = y_proba1.argmax(axis=1)
 				edge1 = copy.deepcopy(imgs_mask_test1)
 				edge1[edge1<2] = 0
 				core1 = copy.deepcopy(imgs_mask_test1)
 				core1[core1>1] = 0
 
-				y_proba2 = model2.predict(img)
-				print(np.shape(y_proba2))
-				print(np.sum(y_proba2[:,0,:,:]))
-				print(np.sum(y_proba2[:,1,:,:]))
-				print(np.sum(y_proba2[:,2,:,:]))
-				imgs_mask_test2 = y_proba2.argmax(axis=1)
-				edge2 = copy.deepcopy(imgs_mask_test2)
-				edge2[edge2<2] = 0
-				core2 = copy.deepcopy(imgs_mask_test2)
-				core2[core2>1] = 0
+# 				y_proba2 = model2.predict(img)
+# 				print(np.shape(y_proba2))
+# 				print(np.sum(y_proba2[:,0,:,:]))
+# 				print(np.sum(y_proba2[:,1,:,:]))
+# 				print(np.sum(y_proba2[:,2,:,:]))
+# 				imgs_mask_test2 = y_proba2.argmax(axis=1)
+# 				edge2 = copy.deepcopy(imgs_mask_test2)
+# 				edge2[edge2<2] = 0
+# 				core2 = copy.deepcopy(imgs_mask_test2)
+# 				core2[core2>1] = 0
 
-				y_proba3 = model3.predict(img)
-				print(np.shape(y_proba3))
-				print(np.sum(y_proba3[:,0,:,:]))
-				print(np.sum(y_proba3[:,1,:,:]))
-				print(np.sum(y_proba3[:,2,:,:]))
-				imgs_mask_test3 = y_proba3.argmax(axis=1)
-				edge3 = copy.deepcopy(imgs_mask_test3)
-				edge3[edge3<2] = 0
-				core3 = copy.deepcopy(imgs_mask_test3)
-				core3[core3>1] = 0
+# 				y_proba3 = model3.predict(img)
+# 				print(np.shape(y_proba3))
+# 				print(np.sum(y_proba3[:,0,:,:]))
+# 				print(np.sum(y_proba3[:,1,:,:]))
+# 				print(np.sum(y_proba3[:,2,:,:]))
+# 				imgs_mask_test3 = y_proba3.argmax(axis=1)
+# 				edge3 = copy.deepcopy(imgs_mask_test3)
+# 				edge3[edge3<2] = 0
+# 				core3 = copy.deepcopy(imgs_mask_test3)
+# 				core3[core3>1] = 0
 
-				imgs_mask_test_edge = edge1 + edge2 + edge3
+				imgs_mask_test_edge = edge1 #+ edge2 + edge3
 				print('here')
 				print(np.min(imgs_mask_test_edge),np.max(imgs_mask_test_edge))
-				imgs_mask_test_edge[imgs_mask_test_edge<4] = 0
+				#imgs_mask_test_edge[imgs_mask_test_edge<4] = 0
 				imgs_mask_test_edge[imgs_mask_test_edge>0] = 2
 
-				imgs_mask_test_core = core1 + core2 + core3
+				imgs_mask_test_core = core1 #+ core2 + core3
 				print('here')
 				print(np.min(imgs_mask_test_core),np.max(imgs_mask_test_core))
-				imgs_mask_test_core[imgs_mask_test_core<2] = 0
+				#imgs_mask_test_core[imgs_mask_test_core<2] = 0
 				imgs_mask_test_core[imgs_mask_test_core>0] = 1
 
 				imgs_mask_test = imgs_mask_test_edge + imgs_mask_test_core
@@ -206,14 +206,15 @@ for filename in tqdm(files):
 
 				img_EC = np.zeros(shape = [Scan,Scan,segdata.shape[2]*factor])
 				for io in range(0,np.shape(img_stack)[2]):
-					img_EC[:,:,io] = cv2.resize(imgs_mask_test[io,:,:], (Scan,Scan), interpolation=cv2.INTER_NEAREST)
+					img_EC[:,:,io] = cv2.resize(imgs_mask_test[io,:,:], (Scan,Scan), interpolation=cv2.INTER_NEAREST)#pay attention to scan scan ratio
 
 				img_EC = img_EC.astype(np.uint8)
 				nifti = nib.Nifti1Image(img_EC, info)
-				nifti.to_filename(input_folder+'/'+image_folder+'/'+filename[:strremove]+segprefix)
+				nifti.to_filename(input_folder+'\\'+image_folder+'\\'+filename[:strremove]+segprefix)
 
-				imgs_mask_test_labels = instance_seg(imgs_mask_test)
-
+				#imgs_mask_test_labels = instance_seg(imgs_mask_test)
+                #Come back -- sckit-image version issue?
+'''
 				img_out1 = np.zeros(shape = [Scn,Scn,segdata.shape[2]*factor])
 				for io in range(0,np.shape(img_stack)[2]):
 					img_out1[:,:,io] = cv2.resize(imgs_mask_test_labels[io,:,:], (np.shape(data)[1],np.shape(data)[0]), interpolation=cv2.INTER_NEAREST)
@@ -233,7 +234,7 @@ for filename in tqdm(files):
 				img_out = img_out.astype(np.int32)
 				affine = imgloaded.get_affine()
 				nifti = nib.Nifti1Image(img_out, affine)
-				nifti.to_filename(input_folder+'/'+image_folder+'/'+filename[:strremove]+'_CystInstSeg.nii.gz')
-					
+				nifti.to_filename(input_folder+'\\'+image_folder+'\\'+filename[:strremove]+'_CystInstSeg.nii.gz')
+'''					
 					
 					
