@@ -2,11 +2,13 @@
 from __future__ import print_function
 import cv2
 import numpy as np
-from keras.models import Model
-from keras.layers import Input, merge, Convolution2D, MaxPooling2D, UpSampling2D
+import tensorflow as tf
+from tensorflow.keras.models import Model
+#from tensorflow.keras.layers import Input, merge, Convolution2D, MaxPooling2D, UpSampling2D
+from tensorflow.keras.layers import Input, Convolution2D, MaxPooling2D, UpSampling2D
 from tensorflow.keras.optimizers import Adam
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras import backend as K
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from tensorflow.keras import backend as K
 from sklearn.model_selection import train_test_split
 import numpy as np
 import cv2
@@ -15,16 +17,17 @@ import nibabel as nib
 from tqdm import *
 import copy
 import sys
-sys.path.append(r'C:\Users\emmasch\Desktop\CystInstance\InstanceCystSeg-master\src')
+sys.path.append(r'C:\Users\UAB\CyInstSeg')
 #from Edge_Core_Labels_WatershedAndCC import instance_seg
 from tensorflow.keras.optimizers import Adam
 #Add the .hdf5 names
 from _3ch_instanceCystSeg_train_unet import get_unet
 
+path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 #modelname2 = ''
 #modelname3 = ''
-FOLDER = 'C:\\Users\\UAB\\CyInstSeg\\Resized\\Training\\NII Images\\'
+Folder = path
 #oriprefix = '_MR.npy.nii' # MR image extension
 
 #--------------------------
@@ -39,11 +42,11 @@ img_cols = 250
 smooth = 1.
 
 #ensure we have the input/output stored in teh right place
-input_folder=FOLDER
-output_folder = FOLDER
+input_folder=Folder
+output_folder = Folder
 image_folder = ''
 seg_folder = ''
-segout_folder = FOLDER
+segout_folder = Folder
 
 oriprefix = 'MR_.npy.nii' # MR indetifier + extension
 kidneyprefix = 'K_.npy.nii' # Kidney segmentation indetifier + extension

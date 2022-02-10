@@ -1,9 +1,12 @@
 import sys
-from keras.models import Model
-from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Dense
-from keras.layers import BatchNormalization, Dropout, Flatten, Lambda
-from keras.layers.merge import concatenate, add
-from keras.layers.advanced_activations import ELU, LeakyReLU
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Dense
+from tensorflow.keras.layers import BatchNormalization, Dropout, Flatten, Lambda
+#from tensorflow.keras.layers.merge import concatenate, add
+from tensorflow.keras.layers import concatenate, add
+#from tensorflow.keras.layers.advanced_activations import ELU, LeakyReLU
+from tensorflow.keras.layers import ELU, LeakyReLU
+from tensorflow.keras import utils
 from metric import dice_coef, dice_coef_loss
 
 IMG_ROWS, IMG_COLS = 512,512

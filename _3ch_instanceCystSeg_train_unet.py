@@ -1,17 +1,18 @@
 from __future__ import print_function
 import cv2
 import numpy as np
-from keras.models import Model
-from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, merge
-from keras.layers.merge import concatenate, add
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D#, merge
+from tensorflow.keras.layers import concatenate, add
+from tensorflow.keras import utils
 from tensorflow.keras.optimizers import Adam, SGD
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras import backend as K
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from tensorflow.keras import backend as K
 from sklearn.model_selection import train_test_split
-from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
 from unet_inception import NConvolution2D, rblock, inception_block, _shortcut
 from metric import dice_coef, dice_coef_loss,jaccard_distance_loss
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from _3ch_instanceCystSeg_data_prepare_ALL_2d_n512 import load_train_data, load_val_data
 
 K.set_image_data_format('channels_first') 
