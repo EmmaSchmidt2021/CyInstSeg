@@ -17,8 +17,8 @@ import fnmatch
 import nibabel as nib
 
 # define paths
-path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Small"
-new_path ="C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Resized"
+path = r"C:\Users\UAB\data\Small"
+new_path = r"C:\Users\UAB\data\Small\Resized Small"
 # determine our final padding size
 new_size = 250
 
@@ -57,47 +57,41 @@ def resize_with_padding(img, expected_size):
 #     print(newimg.size)
 #%%
 # Create a list of the folders we want to walk through to call later
-working_path = "C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Small"
+working_path = path
 patient_folders = []
 pt_fnames = []
 
 import os
 for root, dirs, files in os.walk(os.path.normpath(working_path), topdown=True):
     for name in files:
-        print(os.path.join(root, name))
+        #print(os.path.join(root, name))
         pt_fnames.append(os.path.join(root, name))
-    # for name in dirs:
-    #     print(os.path.join(root, name))
-    #     patient_folders.append(os.path.join(root, name))
 print('\nPatient Folders have been identified\n')
-
-          #ROI_list.append(fname)
-
-#%%
-# filename = os.path.basename(pt_fnames[1])
-# print(filename)
-
 #sort through and get only the files with ROI in them
 #this eliminates the tiff and 3D files 
+
 ROI_list = []
-for i in range(len(pt_fnames)):
+for j in range(len(pt_fnames)):
     ROI_name = 'ROI'
-    filename = os.path.basename(pt_fnames[i])
+    filename = os.path.basename(pt_fnames[j])
     if ROI_name in filename:
-        ROI_list.append(pt_fnames[i])
+        ROI_list.append(pt_fnames[j])
 print('\nFilenames have been found and added\n')
 
    
 #%%
 # loop through our generated list and resize, saving the new image in our output path
 
-resized = np.zeros((96,new_size,new_size), dtype ='uint8') #preallocate array
+ #preallocate array
 for i in range(len(ROI_list)): # loop through all the available files from the list that had our keyword
     orig_fname = os.path.basename(ROI_list[i])# grab the ith filename in the list
     #extract information from the filename
     num_slice = int(orig_fname[-2:])
+    print(num_slice)
     num_width = int((orig_fname[-7:-3]))
+    print(num_width)
     num_height = int((orig_fname[-11:-7]))
+    print(num_height)
     pt_numb =(orig_fname[0:6])
     yr_numb = (orig_fname[8])
     if 'Cyst' in orig_fname:
@@ -111,19 +105,26 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
     elif 'Left' in orig_fname:
         side = 'L'
     call_file = str(ROI_list[i]) #define our filename with path to open (working_path+'/'+orig_fname)
+    resized = np.zeros((num_slice,new_size,new_size), dtype ='uint8')
     with open(r'%s' %call_file, 'rb') as file: #read in raw uint8 and resize correctly
          data = np.fromfile(file, dtype = 'uint8').reshape(num_slice,num_width,num_height)
-         for i in range(num_slice):
-             orig_slice = data[i]
+         for j in range(num_slice):
+             orig_slice = data[j]
              re_slice = im.fromarray(orig_slice)
-             resized[i] = resize_with_padding(re_slice, (new_size, new_size))
+             resized[j] = resize_with_padding(re_slice, (new_size, new_size))
              # now we need to rename this resized array and save it as a .npy
     #new_fname = str('%s' %orig_fname + '_RESIZED_') #keep the original name for now 
-    new_fname = str(img_type +'_' + pt_numb +'_'+ yr_numb +'_'+ side)
+    new_fname = str(pt_numb +'_'+ yr_numb +'_'+ side + '_' + img_type )
     file_name = "%s.npy" %new_fname # add our extension
     print('%s has been padded and renamed %s' %(orig_fname, new_fname))
     np.save(os.path.join(new_path, file_name), resized) # save in the new file folder
     #will need to make new code to add the prefix names an organize into the appropriate folders
+    num_slice=0
+    num_height=0
+    num_width=0
+
+
+print("complete --- nice job")
     
 #%% --check that we can load in arrays and nothing got messed up in the save
 #load in .npy arrays 
@@ -132,7 +133,15 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
 # e = im.fromarray(e_array[60])
 # e
 
+fname= ROI_list[15]
+print(fname)
 
+num_slice_test = fname[-2:]
+print(num_slice_test)
+num_slice_test2 = fname[-7:-3]
+print(num_slice_test2)
+num_slice_test3 = fname[-11:-7]
+print(num_slice_test3)
 #%%
 ##______now make into nifti files      
 import os
