@@ -133,21 +133,12 @@ print("complete --- nice job")
 # e = im.fromarray(e_array[60])
 # e
 
-fname= ROI_list[15]
-print(fname)
-
-num_slice_test = fname[-2:]
-print(num_slice_test)
-num_slice_test2 = fname[-7:-3]
-print(num_slice_test2)
-num_slice_test3 = fname[-11:-7]
-print(num_slice_test3)
 #%%
 ##______now make into nifti files      
 import os
 
 
-directory_path = r"C:\Users\UAB\CyInstSeg\Resized\MRimg"
+directory_path = r"C:\Users\UAB\CyInstSeg\Resized"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):

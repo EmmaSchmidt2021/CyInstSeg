@@ -33,7 +33,7 @@ def get_unet():
             # input will need to be resized to 512 by 512
     conv1 = inception_block(inputs, 64, activation=act)
     
-    pool1 = NConvolution2D(64, 3, 3, padding='same', subsample=(2,2))(conv1)
+    pool1 = NConvolution2D(64,[3, 3], padding='same', subsample=(2,2))(conv1)
     pool1 = Dropout(do)(pool1)
     
     conv2 = inception_block(pool1, 128, activation=act)
@@ -41,7 +41,7 @@ def get_unet():
     pool2 = Dropout(do)(pool2)
     
     conv3 = inception_block(pool2, 256, activation=act)
-    pool3 = NConvolution2D(256, 3, 3, padding='same', subsample=(2,2))(conv3)
+    pool3 = NConvolution2D(256,[3, 3], padding='same', subsample=(2,2))(conv3)
     pool3 = Dropout(do)(pool3)
      
     conv4 = inception_block(pool3, 512, activation=act)
