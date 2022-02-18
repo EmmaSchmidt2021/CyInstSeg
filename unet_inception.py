@@ -72,21 +72,11 @@ def rblock(inputs, num, depth, scale=0.1):
 #____________________________________________# Running into issue here
 
 
-# def NConvolution2D(nb_filter, nb_row, nb_col, padding='same', subsample=(1, 1)):
-#     def f(_input):
-#         conv = Conv2D(nb_filter=nb_filter, nb_row=nb_row, nb_col=nb_col, subsample=subsample,
-#                               padding=padding)(_input)
-#         norm = BatchNormalization(axis=1)(conv)
-#         return ELU()(norm)
-
-#     return f
-
-def NConvolution2D(nb_filter, kernel_size , padding='same', subsample=(1, 1)):
+def NConvolution2D(nb_filter, nb_row, nb_col, padding='same', subsample=(1, 1)):
     def f(_input):
-        conv = Conv2D(nb_filter=None, kernel_size = kernel_size, subsample=None,
-                              padding=None)(_input)
+        conv = Conv2D(nb_filter, nb_row, nb_col, subsample, 
+                          padding=padding)(_input)
         norm = BatchNormalization(axis=1)(conv)
         return ELU()(norm)
 
     return f
-    
