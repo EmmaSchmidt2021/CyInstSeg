@@ -23,7 +23,7 @@ from tensorflow.keras.optimizers import Adam
 #Add the .hdf5 names
 from _3ch_instanceCystSeg_train_unet import get_unet
 
-path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
+path = r"C:\Users\schmi\CyInstSeg\Resized\Training\NII Images"#-----------
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 #modelname2 = ''
 #modelname3 = ''
@@ -70,7 +70,7 @@ model1.load_weights(modelname1+'.hdf5')
 #model2.load_weights(modelname2+'.hdf5') 
 #model3 = get_unet()
 #model3.load_weights(modelname3+'.hdf5') 
-				
+print('initiation complete')				
 for filename in tqdm(files):
 	count+=1
 	if oriprefix in filename:     

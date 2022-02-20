@@ -1,6 +1,7 @@
 import sys
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Dense
+from tensorflow.keras.layers import Conv2D, Convolution2D, MaxPooling2D, UpSampling2D, Dense
+from keras.layers import Input
 from tensorflow.keras.layers import BatchNormalization, Dropout, Flatten, Lambda
 #from tensorflow.keras.layers.merge import concatenate, add
 from tensorflow.keras.layers import concatenate, add
@@ -12,9 +13,9 @@ from metric import dice_coef, dice_coef_loss
 IMG_ROWS, IMG_COLS = 512,512
 
 def _shortcut(_input, residual):
-    stride_width = _input._keras_shape[2] / residual._keras_shape[2]
-    stride_height = _input._keras_shape[3] / residual._keras_shape[3]
-    equal_channels = residual._keras_shape[1] == _input._keras_shape[1]
+    stride_width = _input.shape[2] / residual.shape[2]
+    stride_height = _input.shape[3] / residual.shape[3]
+    equal_channels = residual.shape[1] == _input.shape[1]
 
     shortcut = _input
 
@@ -74,8 +75,7 @@ def rblock(inputs, num, depth, scale=0.1):
 
 def NConvolution2D(nb_filter, nb_row, nb_col, padding='same', subsample=(1, 1)):
     def f(_input):
-        conv = Conv2D(nb_filter, nb_row, nb_col, subsample, 
-                          padding=padding)(_input)
+        conv = Conv2D(filters=nb_filter, kernel_size=(nb_row, nb_col), strides=subsample, padding=padding)(_input)
         norm = BatchNormalization(axis=1)(conv)
         return ELU()(norm)
 
