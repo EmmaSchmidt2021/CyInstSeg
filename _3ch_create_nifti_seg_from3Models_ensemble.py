@@ -48,8 +48,8 @@ image_folder = ''
 seg_folder = ''
 segout_folder = Folder
 
-oriprefix = 'MR_.npy.nii' # MR indetifier + extension
-kidneyprefix = 'K_.npy.nii' # Kidney segmentation indetifier + extension
+oriprefix = 'MR.npy.nii' # MR indetifier + extension
+kidneyprefix = 'K.npy.nii' # Kidney segmentation indetifier + extension
 segprefix = '_' + modelname1 + 'CY_PREDICTION.npy.nii' # add extension
 strremove = -len(oriprefix)
 Scan = 250
@@ -76,6 +76,7 @@ for filename in tqdm(files):
 	if oriprefix in filename:     
 		if 'Seg' not in filename:
 			if 'unet4' not in filename: 
+                #print('unet4 not in filename')
 				imgloaded = nib.load(input_folder+'\\'+image_folder+'\\'+filename)
 				data = imgloaded.get_data()
 				print(type(data))

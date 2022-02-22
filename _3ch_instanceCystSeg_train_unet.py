@@ -18,8 +18,8 @@ from _3ch_instanceCystSeg_data_prepare_ALL_2d_n512 import load_train_data, load_
 K.set_image_data_format('channels_first') 
 # channels first means that it is looking for the information in this order
 # (batch, channels, height, width)
-img_rows = 512
-img_cols = 512
+img_rows = 250
+img_cols = 250
 
 
 smooth = 1.

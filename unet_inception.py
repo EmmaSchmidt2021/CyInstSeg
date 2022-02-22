@@ -20,7 +20,7 @@ def _shortcut(_input, residual):
     shortcut = _input
 
     if stride_width > 1 or stride_height > 1 or not equal_channels:
-        shortcut = Conv2D(nb_filter=residual._keras_shape[1], nb_row=1, nb_col=1,
+        shortcut = Conv2D(nb_filter=residual.shape[1], nb_row=1, nb_col=1,
                                  subsample=(stride_width, stride_height),
                                  kernel_initializer="he_normal", padding="valid")(_input)
 
