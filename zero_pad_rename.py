@@ -17,10 +17,10 @@ import fnmatch
 import nibabel as nib
 
 # define paths
-path = r"C:\Users\UAB\data\Small"
-new_path = r"C:\Users\UAB\data\Small\Resized Small"
+path = r"C:\Users\UAB\CyInstSeg\Pad 512"
+new_path = r"C:\Users\UAB\CyInstSeg\Pad 512"
 # determine our final padding size
-new_size = 250
+new_size = 512
 
 #%%   
 # create two functions - one to determine the appropriate size, and one to pad
@@ -69,7 +69,7 @@ for root, dirs, files in os.walk(os.path.normpath(working_path), topdown=True):
 print('\nPatient Folders have been identified\n')
 #sort through and get only the files with ROI in them
 #this eliminates the tiff and 3D files 
-
+#%%
 ROI_list = []
 for j in range(len(pt_fnames)):
     ROI_name = 'ROI'
@@ -93,7 +93,7 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
         print(num_width)
         num_height = int((orig_fname[-12:-8]))
         print(num_height)
-    elif:
+    else:
         num_width = int((orig_fname[-7:-3]))
         print(num_width)
         num_height = int((orig_fname[-11:-7]))
@@ -144,7 +144,7 @@ print("complete --- nice job")
 import os
 
 
-directory_path = r"C:\Users\UAB\CyInstSeg\Resized"
+directory_path = r"C:\Users\UAB\CyInstSeg\Pad 512"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):
@@ -155,10 +155,11 @@ for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True)
 
 import nibabel as nib
 import numpy as np
+
 for i in range(len(npy_files)): 
     filename = npy_files[i]
     data = np.load(filename)
-    data = np.arange(250*250*96).reshape(250,250,96)
+    data = np.arange(512*512*96).reshape(512,512,96)
     new_image = nib.Nifti1Image(data, affine=np.eye(4))
     nib.save(new_image, "%s.nii" %filename)
     
