@@ -88,10 +88,16 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
     #extract information from the filename
     num_slice = int(orig_fname[-2:])
     print(num_slice)
-    num_width = int((orig_fname[-7:-3]))
-    print(num_width)
-    num_height = int((orig_fname[-11:-7]))
-    print(num_height)
+    if num_slice > 99:
+        num_width = int((orig_fname[-8:-4]))
+        print(num_width)
+        num_height = int((orig_fname[-12:-8]))
+        print(num_height)
+    elif:
+        num_width = int((orig_fname[-7:-3]))
+        print(num_width)
+        num_height = int((orig_fname[-11:-7]))
+        print(num_height)
     pt_numb =(orig_fname[0:6])
     yr_numb = (orig_fname[8])
     if 'Cyst' in orig_fname:
