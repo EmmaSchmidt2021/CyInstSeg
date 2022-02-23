@@ -17,8 +17,8 @@ import fnmatch
 import nibabel as nib
 
 # define paths
-path = r"C:\Users\UAB\CyInstSeg\Pad 512"
-new_path = r"C:\Users\UAB\CyInstSeg\Pad 512"
+path = r"C:\Users\UAB\Pad 512"
+new_path = r"C:\Users\UAB\Pad 512"
 # determine our final padding size
 new_size = 512
 
@@ -144,7 +144,7 @@ print("complete --- nice job")
 import os
 
 
-directory_path = r"C:\Users\UAB\CyInstSeg\Pad 512"
+directory_path = r"C:\Users\UAB\Pad 512"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):

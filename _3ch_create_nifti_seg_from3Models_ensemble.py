@@ -25,7 +25,7 @@ from _3ch_instanceCystSeg_train_unet import get_unet
 
 #path = r"C:\Users\schmi\CyInstSeg\Resized\Training\NII Images"#-----------
 #path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
-path = r"C:\Users\UAB\CyInstSeg\Pad 512"
+path = r"C:\Users\UAB\Pad 512"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 #modelname2 = ''
 #modelname3 = ''
@@ -38,8 +38,8 @@ Folder = path
 
 K.set_image_data_format('channels_first')
 
-img_rows = 250
-img_cols = 250
+img_rows = 512
+img_cols = 512
 
 smooth = 1.
 
@@ -54,7 +54,7 @@ oriprefix = 'MR.npy.nii' # MR indetifier + extension
 kidneyprefix = 'K.npy.nii' # Kidney segmentation indetifier + extension
 segprefix = '_' + modelname1 + 'CY_PREDICTION.npy.nii' # add extension
 strremove = -len(oriprefix)
-Scan = 250
+Scan = 512
 count = 0
 
 try:
