@@ -164,8 +164,40 @@ for i in range(len(npy_files)):
     nib.save(new_image, "%s.nii" %filename)
     
 #%% check nifi file kept shape the same
-img = nib.load("MR_101934_0_L.npy.nii")
-img.shape
-img.data
+# img = nib.load("MR_101934_0_L.npy.nii")
+# img.shape
+# img.data
 
-            
+#%%
+from skimage import io
+from skimage.transform import resize
+import matplotlib.pyplot as plt
+import tiffile as tiff
+from tifffile import imread, imwrite
+im = io.imread('C:/Users/schmi/CyInstSeg/Resized/Training/TIFF/101934 y0 t3.tif')
+print(im.shape)     
+
+
+test_image = im[10]
+plt.imshow(test_image, cmap='gray')
+print('original tiff image shape:', test_image.shape)
+
+enlarge_img= resize(test_image, (512,512))
+plt.imshow(enlarge_img, cmap="gray")
+
+
+resized_tiff = resize(im, (32,512,512))
+resized_test = resized_tiff[15]
+plt.imshow(resized_test, cmap='gray')
+tiff.imsave('101934 y0 t3_RESIZED.tif', resized_tiff)
+#%% 
+new_img_tiff = io.imread("./101934 y0 t3_RESIZED.tif")
+new_img_tiff_test = new_img_tiff[5]
+plt.imshow(new_img_tiff_test, cmap='gray')
+print(new_img_tiff.shape)
+#%% Convert and resize TIFF
+
+from imio import load, save
+
+img = load.load_any("./101934 y0 t3_RESIZED.tif")
+save.to_nii(img, "./101934 y0 t3_RESIZED.tif.nii")
