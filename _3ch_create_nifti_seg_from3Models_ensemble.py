@@ -23,9 +23,9 @@ from tensorflow.keras.optimizers import Adam
 #Add the .hdf5 names
 from _3ch_instanceCystSeg_train_unet import get_unet
 
-#path = r"C:\Users\schmi\CyInstSeg\Resized\Training\NII Images"#-----------
+path = r"C:\Users\schmi\CyInstSeg\Resized\Training\NII Images"#-----------
 #path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
-path = r"C:\Users\schmi\CyInstSeg\Resized\Training\TIFF"
+#path = r"C:\Users\schmi\CyInstSeg\Resized\Training\TIFF"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 #modelname2 = ''
 #modelname3 = ''
@@ -50,7 +50,7 @@ image_folder = ''
 seg_folder = ''
 segout_folder = Folder
 
-oriprefix = 'RESIZED.tif.nii' # MR indetifier + extension
+oriprefix = 'MR.npy.nii' # MR indetifier + extension
 kidneyprefix = 'K.npy.nii' # Kidney segmentation indetifier + extension
 segprefix = '_' + modelname1 + 'CY_PREDICTION.npy.nii' # add extension
 strremove = -len(oriprefix)
