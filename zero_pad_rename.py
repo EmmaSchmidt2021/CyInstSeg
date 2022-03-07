@@ -46,15 +46,6 @@ def resize_with_padding(img, expected_size):
     padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
     return ImageOps.expand(img, padding)
 
-#--- check that functions work as we expect
-# if __name__ == "__main__":
-#     img = Image.open(r"C:/Users/emmasch/CystInstance/InstanceCystSeg-master/src/data/Pt 101934/dciaca/sequence/CY_101934-3-R22.png")
-#     print(img)
-#     img = resize_with_padding(img, (new_size, new_size))
-#     print(img.size)
-#     img.show()
-#     newimg = img.save("resized_img.png")
-#     print(newimg.size)
 #%%
 # Create a list of the folders we want to walk through to call later
 working_path = path
@@ -166,6 +157,4 @@ for i in range(len(npy_files)):
 #%% check nifi file kept shape the same
 img = nib.load("MR_101934_0_L.npy.nii")
 img.shape
-img.data
-
-            
+img.data       

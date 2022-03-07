@@ -1,7 +1,7 @@
 import sys
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Conv2D, Convolution2D, MaxPooling2D, UpSampling2D, Dense
-from keras.layers import Input
+from tensorflow.keras.layers import Input
 from tensorflow.keras.layers import BatchNormalization, Dropout, Flatten, Lambda
 #from tensorflow.keras.layers.merge import concatenate, add
 from tensorflow.keras.layers import concatenate, add
