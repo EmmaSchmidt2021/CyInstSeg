@@ -29,6 +29,6 @@ print(imgOG_data.shape)
 print(imgOG_data)
 
 
-mid_slice_x = imgOG_data[:,:,288]
+mid_slice_x = imgOG_data[:,:,200]
 print(mid_slice_x.shape)
 plt.imshow(mid_slice_x.T, cmap='summer')

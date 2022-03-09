@@ -125,10 +125,15 @@ print("complete --- nice job")
     
 #%% --check that we can load in arrays and nothing got messed up in the save
 #load in .npy arrays 
-
-# e_array = np.load(str(new_path+'/'+file_name))
-# e = im.fromarray(e_array[60])
-# e
+from PIL import Image as im
+from PIL import ImageOps
+import numpy as np
+new_path = r'C:\Users\UAB\Pad 512\orig npy'
+filename = r'C:/Users/UAB/Pad 512/orig npy/101934_0_L_MR.npy'
+#e_array = np.load(str(new_path+'/'+file_name))
+e_array = np.load(filename)
+e = im.fromarray(e_array[60])
+plt.imshow(e, cmap='gray')
 
 #%%
 ##______now make into nifti files      
@@ -155,11 +160,21 @@ for i in range(len(npy_files)):
     nib.save(new_image, "%s.nii" %filename)
     
 #%% check nifi file kept shape the same
-<<<<<<< HEAD
-img = nib.load("MR_101934_0_L.npy.nii")
+
+import nibabel as nib
+import numpy as np
+import matplotlib.pyplot as plt
+img = nib.load("./101934_0_L_MR.npy.nii")
 img.shape
-img.data       
-=======
+imgOG_data = img.get_fdata()
+print(type(imgOG_data))
+print(imgOG_data.shape)
+print(imgOG_data)
+mid_slice_x = imgOG_data[:,:,50]
+print(mid_slice_x.shape)
+plt.imshow(mid_slice_x.T, cmap='gray')
+
+
 # img = nib.load("MR_101934_0_L.npy.nii")
 # img.shape
 # img.data
@@ -197,4 +212,4 @@ from imio import load, save
 
 img = load.load_any("./101934 y0 t3_RESIZED.tif")
 save.to_nii(img, "./101934 y0 t3_RESIZED.tif.nii")
->>>>>>> 25962b5472c425e92859fc9b3bdec523189bc233
+
