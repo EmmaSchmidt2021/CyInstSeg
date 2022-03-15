@@ -213,3 +213,8 @@ from imio import load, save
 img = load.load_any("./101934 y0 t3_RESIZED.tif")
 save.to_nii(img, "./101934 y0 t3_RESIZED.tif.nii")
 
+test_load = nib.load(r"C:\Users\schmi\CyInstSeg\Resized\file.nii").get_fdata()
+test_load.shape
+import matplotlib.pyplot as plt
+test = test_load[15,:,:]
+plt.imshow(test, cmap='gray')
