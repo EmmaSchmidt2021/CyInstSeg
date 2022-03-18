@@ -209,12 +209,44 @@ print(new_img_tiff.shape)
 #%% Convert and resize TIFF
 
 from imio import load, save
+import nibabel as nib
+import numpy as np
+img = load.load_any(r"C:\Users\UAB\Pad 512\101934 y0 t3.tif")
+#img2 = np.load(r"C:\Users\UAB\Pad 512\orig npy\101934_0_L_K.npy")
+img.shape
+imgSM = img[10:15,:,:]
+save.to_nii(imgSM, r"C:\Users\UAB\Pad 512\orig npy\101934 y0 t3_SMALL_MR.nii")
 
-img = load.load_any("./101934 y0 t3_RESIZED.tif")
-save.to_nii(img, "./101934 y0 t3_RESIZED.tif.nii")
-
-test_load = nib.load(r"C:\Users\schmi\CyInstSeg\Resized\file.nii").get_fdata()
-test_load.shape
+test_load3 = nib.load( r"C:\Users\UAB\Pad 512\orig npy\101934 y0 t3_SMALL_MR.nii").get_fdata()
+test_load3.shape
 import matplotlib.pyplot as plt
-test = test_load[15,:,:]
-plt.imshow(test, cmap='gray')
+test3 = test_load3[2,:,:]
+plt.imshow(test2, cmap='gray')
+
+from skimage import io
+from skimage.transform import resize
+enlarge_img= resize(test, (512,512))
+plt.imshow(enlarge_img, cmap="gray")
+
+enlarge_stack = resize(test_load, (32,512,512))
+plt.imshow(enlarge_stack[12,:,:], cmap="gray")
+save.to_nii(enlarge_stack, r"C:\Users\UAB\CyInstSeg\Resized\101934 y0 t3_512_MR.nii")
+#%%
+#%%
+  import tensorflow as tf
+
+  gpus = tf.config.list_physical_devices('GPU')
+  if gpus:
+      try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+          tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+      except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
+#%%
+import tensorflow as tf
+gpus = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpus[0], True)

@@ -22,24 +22,9 @@ sys.path.append(r'C:\Users\UAB\CyInstSeg')
 from tensorflow.keras.optimizers import Adam
 #Add the .hdf5 names
 from _3ch_instanceCystSeg_train_unet import get_unet
-#%%
-  import tensorflow as tf
 
-  gpus = tf.config.list_physical_devices('GPU')
-  if gpus:
-      try:
-        # Currently, memory growth needs to be the same across GPUs
-        for gpu in gpus:
-          tf.config.experimental.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-      except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
-#%%
-
-
-path = r"C:\Users\schmi\CyInstSeg\Resized\Training\NII Images"#-----------
+#path = r"C:\Users\UAB\CyInstSeg"#-----------
+path = r"C:\Users\UAB\Pad 512"
 #path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
 #path = r"C:\Users\schmi\CyInstSeg\Resized\Training\TIFF"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
@@ -47,7 +32,10 @@ modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 #modelname3 = ''
 Folder = path
 #oriprefix = '_MR.npy.nii' # MR image extension
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+tf.config.experimental.set_memory_growth(gpus[0], True) 
 #--------------------------
 # END USER INPUT
 #--------------------------
@@ -66,9 +54,9 @@ image_folder = ''
 seg_folder = ''
 segout_folder = Folder
 
-oriprefix = 'MR.npy.nii' # MR indetifier + extension
-kidneyprefix = 'K.npy.nii' # Kidney segmentation indetifier + extension
-segprefix = '_' + modelname1 + 'CY_PREDICTION.npy.nii' # add extension
+oriprefix = 'MR.nii' # MR indetifier + extension
+kidneyprefix = 'K.nii' # Kidney segmentation indetifier + extension
+segprefix = '_' + modelname1 + 'CY_PREDICTION.nii' # add extension
 strremove = -len(oriprefix)
 Scan = 512
 count = 0
@@ -261,4 +249,4 @@ for filename in tqdm(files):
                 nifti.to_filename(input_folder+'\\'+image_folder+'\\'+filename[:strremove]+'_CystInstSeg.nii.gz')
 '''                    
                     
-                    
+                
