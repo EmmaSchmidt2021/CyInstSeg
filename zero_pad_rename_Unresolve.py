@@ -16,13 +16,12 @@ import os
 import fnmatch
 import nibabel as nib
 
-# define paths
-path = r"C:\Users\UAB\Pad 512"
-new_path = r"C:\Users\UAB\Pad 512"
-# determine our final padding size
+# define paths and final padding size
+raw_path = r'C:\Users\UAB\Kidney-Segmentation-Jupyter\Unconverted Images'
+new_path = r'C:\Users\UAB\Kidney-Segmentation-Jupyter\Unconverted Images\NPY'
+final_path = r'C:\Users\UAB\Kidney-Segmentation-Jupyter\AllTrainingImages'
 new_size = 512
 
-#%%   
 # create two functions - one to determine the appropriate size, and one to pad
 
 # figure out difference that needs to be made up in rows/columns
@@ -46,9 +45,8 @@ def resize_with_padding(img, expected_size):
     padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
     return ImageOps.expand(img, padding)
 
-#%%
 # Create a list of the folders we want to walk through to call later
-working_path = path
+working_path = raw_path
 patient_folders = []
 pt_fnames = []
 
@@ -60,7 +58,6 @@ for root, dirs, files in os.walk(os.path.normpath(working_path), topdown=True):
 print('\nPatient Folders have been identified\n')
 #sort through and get only the files with ROI in them
 #this eliminates the tiff and 3D files 
-#%%
 ROI_list = []
 for j in range(len(pt_fnames)):
     ROI_name = 'ROI'
@@ -79,12 +76,15 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
     #extract information from the filename
     num_slice = int(orig_fname[-2:])
     print(num_slice)
-    if num_slice > 99:
+    if num_slice < 50:
+        print('over 99')
+        num_slice = int(orig_fname[-3:])
         num_width = int((orig_fname[-8:-4]))
         print(num_width)
         num_height = int((orig_fname[-12:-8]))
         print(num_height)
     else:
+        print('less than 99')
         num_width = int((orig_fname[-7:-3]))
         print(num_width)
         num_height = int((orig_fname[-11:-7]))
@@ -252,3 +252,8 @@ save.to_nii(enlarge_img, r"C:\Users\UAB\Pad 512\101934 y0 t3_4slice_512_K.nii")
 import tensorflow as tf
 gpus = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(gpus[0], True)
+
+#%%
+
+fname_test = '105005 y2 3t Image ROI Left 8bit 152 220 102'
+print(fname_test[-3:])
