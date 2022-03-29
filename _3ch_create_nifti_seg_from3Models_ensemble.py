@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import cv2
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import nibabel as nib
 from tqdm import *
 import copy
@@ -33,10 +34,14 @@ modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
 Folder = path
 #oriprefix = '_MR.npy.nii' # MR image extension
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
+#config = tf.compat.v1.ConfigProto()
+#config.gpu_options.per_process_gpu_memory_fraction = 0.4
+#session = tf.compat.v1.Session(config=config)
+
+
+    
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-tf.config.experimental.set_memory_growth(gpus[0], True) 
-#--------------------------
+tf.compat.v1.RunOptions(report_tensor_allocations_upon_oom = True)
 # END USER INPUT
 #--------------------------
 
@@ -54,8 +59,8 @@ image_folder = ''
 seg_folder = ''
 segout_folder = Folder
 
-oriprefix = 'MR.nii' # MR indetifier + extension
-kidneyprefix = 'K.nii' # Kidney segmentation indetifier + extension
+oriprefix = '512_MR.nii' # MR indetifier + extension
+kidneyprefix = '512_K.nii' # Kidney segmentation indetifier + extension
 segprefix = '_' + modelname1 + 'CY_PREDICTION.nii' # add extension
 strremove = -len(oriprefix)
 Scan = 512
