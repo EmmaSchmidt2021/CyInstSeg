@@ -111,14 +111,15 @@ for i in range(len(ROI_list)): # loop through all the available files from the l
              resized[j] = resize_with_padding(re_slice, (new_size, new_size))
              # now we need to rename this resized array and save it as a .npy
     #new_fname = str('%s' %orig_fname + '_RESIZED_') #keep the original name for now 
-    new_fname = str(pt_numb +'_'+ yr_numb +'_'+ side + '_' + img_type )
+    new_fname = str(pt_numb +'_'+ yr_numb +'_'+ str(num_slice) +'_' + side + '_' + img_type )
     file_name = "%s.npy" %new_fname # add our extension
     print('%s has been padded and renamed %s' %(orig_fname, new_fname))
     np.save(os.path.join(new_path, file_name), resized) # save in the new file folder
     #will need to make new code to add the prefix names an organize into the appropriate folders
-    num_slice=0
-    num_height=0
-    num_width=0
+    #num_slice=0
+    #num_height=0
+    #num_width=0
+    
 
 
 print("complete --- nice job")
@@ -140,13 +141,13 @@ plt.imshow(e, cmap='gray')
 import os
 
 
-directory_path = r"C:\Users\UAB\Pad 512"
+directory_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\Unconverted Images\NPY"
 npy_files = []
 
 for root, dirs, files in os.walk(os.path.normpath(directory_path), topdown=True):
     for name in files:
-        npy_files.append(name)
-        
+        npy_files.append(os.path.join(root, name))
+
 #%%
 
 import nibabel as nib
@@ -157,7 +158,7 @@ for i in range(len(npy_files)):
     data = np.load(filename)
     data = np.arange(512*512*96).reshape(512,512,96)
     new_image = nib.Nifti1Image(data, affine=np.eye(4))
-    nib.save(new_image, "%s.nii" %filename)
+    nib.save(new_image, "%s.nii" %filename[:-4])
     
 #%% check nifi file kept shape the same
 
@@ -255,5 +256,30 @@ tf.config.experimental.set_memory_growth(gpus[0], True)
 
 #%%
 
-fname_test = '105005 y2 3t Image ROI Left 8bit 152 220 102'
-print(fname_test[-3:])
+filename= '101934_0_106_L_K.npy'
+
+print(filename[-10:-8])
+
+slices= int(filename[-10:-8])
+
+if slices < 50:
+    slices = int(filename[-11:-8])
+    #print('number of slices', slices)
+else:
+    slices = int(filename[-11:-9])
+    #print('number of slices', slices)
+#%%
+
+for i in range(len(npy_files)): 
+    filename = npy_files[i]
+    data = np.load(filename)
+    num_slice = int(filename[-11:-9])
+    print(num_slice)
+    if num_slice < 50:
+        num_slice = int(filename[-12:-9])
+        #print('number of slices', slices)
+    else:
+        num_slice = num_slice
+    data = np.arange(new_size*new_size*num_slice).reshape(new_size,new_size,num_slice)
+    new_image = nib.Nifti1Image(data, affine=np.eye(4))
+    nib.save(new_image, os.path.join(final_path, "%s.nii" %filename[:-4])
