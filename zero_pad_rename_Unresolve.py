@@ -165,7 +165,7 @@ for i in range(len(npy_files)):
 import nibabel as nib
 import numpy as np
 import matplotlib.pyplot as plt
-img = nib.load("./101934_0_L_MR.npy.nii")
+img = nib.load(r"C:\Users\UAB\Kidney-Segmentation-Jupyter\AllTrainingImages\101934_0_96_L_K.nii")
 img.shape
 imgOG_data = img.get_fdata()
 print(type(imgOG_data))
@@ -283,3 +283,23 @@ for i in range(len(npy_files)):
     data = np.arange(new_size*new_size*num_slice).reshape(new_size,new_size,num_slice)
     new_image = nib.Nifti1Image(data, affine=np.eye(4))
     nib.save(new_image, os.path.join(final_path, "%s.nii" %filename[:-4])
+#%%
+import os
+import shutil
+path = r'C:\Users\UAB\Kidney-Segmentation-Jupyter\AllTrainingImages'
+cyst_names=[]
+for root, dirs, files in os.walk(os.path.normpath(path), topdown=True):
+    for name in files:
+        #print(os.path.join(root, name))
+        cyst_names.append(os.path.join(root, name))
+
+C_list = []
+for j in range(len(cyst_names)):
+    C_name = '_C'
+    filename = os.path.basename(cyst_names[j])
+    if C_name in filename:
+        C_list.append(cyst_names[j])
+
+cyst_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\Unconverted Images\CystNII"
+for i in range(len(C_list)):
+    shutil.move(C_list[i],cyst_path )
