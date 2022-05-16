@@ -25,7 +25,7 @@ from tensorflow.keras.optimizers import Adam
 from _3ch_instanceCystSeg_train_unet import get_unet
 
 #path = r"C:\Users\UAB\CyInstSeg"#-----------
-path = r"C:\Users\UAB\Pad 512"
+path = r"C:\Users\UAB\CyInstSeg"
 #path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
 #path = r"C:\Users\schmi\CyInstSeg\Resized\Training\TIFF"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'
@@ -47,8 +47,8 @@ tf.compat.v1.RunOptions(report_tensor_allocations_upon_oom = True)
 
 K.set_image_data_format('channels_first')
 
-img_rows = 512
-img_cols = 512
+img_rows = 256
+img_cols = 256
 
 smooth = 1.
 
@@ -59,8 +59,8 @@ image_folder = ''
 seg_folder = ''
 segout_folder = Folder
 
-oriprefix = '512_MR.nii' # MR indetifier + extension
-kidneyprefix = '512_K.nii' # Kidney segmentation indetifier + extension
+oriprefix = 'M.nii' # MR indetifier + extension
+kidneyprefix = 'M_K.nii' # Kidney segmentation indetifier + extension
 segprefix = '_' + modelname1 + 'CY_PREDICTION.nii' # add extension
 strremove = -len(oriprefix)
 Scan = 512
@@ -76,7 +76,7 @@ except:
 counter = 0
 
 model1 = get_unet()
-model1.load_weights(modelname1+'.hdf5') 
+model1.load_weights(r"C:\Users\UAB\CyInstSeg\instanceCystSeg_modelWeights_3ch_t001.hdf5") 
 #model2 = get_unet()
 #model2.load_weights(modelname2+'.hdf5') 
 #model3 = get_unet()
@@ -212,8 +212,8 @@ for filename in tqdm(files):
                 
                 print(np.shape(imgs_mask_test))
 
-                #affine = imgloaded.get_affine()
-                affine = imgloaded.affine()
+                affine = imgloaded.get_affine()
+                #affine = imgloaded.affine()
                 info = copy.deepcopy(affine)
                 factor1 = Scan/data.shape[1]
                 info[0,0] = info[0,0]/factor1

@@ -13,11 +13,8 @@ from PIL import Image as img
 import matplotlib.pyplot as plt
 import nibabel as nib
 
-
-data_path = r'C:\Users\UAB\Pad 512'
-filename = '101934_0_L__instanceCystSeg_modelWeights_3ch_t001CY_PREDICTION.npy.nii'
-imgOG = nib.load(filename)
-
+imgOG = nib.load(r"C:\Users\UAB\CyInstSeg\105005_0_84_R_C.nii")
+#imgOG = nib.load(r"C:\Users\UAB\CyInstSeg\101934_0_96_L_C.nii")
 print(type(imgOG))
 print(imgOG.shape)
 
@@ -26,9 +23,7 @@ imgOG_data = imgOG.get_fdata()
 print(type(imgOG_data))
 print(imgOG_data.shape)
 
-print(imgOG_data)
 
-
-mid_slice_x = imgOG_data[:,:,200]
+mid_slice_x = imgOG_data[:,:,50]
 print(mid_slice_x.shape)
-plt.imshow(mid_slice_x.T, cmap='summer')
+plt.imshow(mid_slice_x.T, cmap='gray')
