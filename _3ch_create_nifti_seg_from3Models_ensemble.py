@@ -47,8 +47,8 @@ tf.compat.v1.RunOptions(report_tensor_allocations_upon_oom = True)
 
 K.set_image_data_format('channels_first')
 
-img_rows = 256
-img_cols = 256
+img_rows = 512
+img_cols = 512
 
 smooth = 1.
 
