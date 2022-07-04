@@ -18,11 +18,11 @@ from tqdm import *
 import scipy
 
 #Edit the following two...
-input_folder='C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Resized' #Validation data folder
-output_folder = 'C:/Users/emmasch/CystInstance/InstanceCystSeg-master/data/Output'
+input_folder=r'C:\Users\UAB\data\Normalized' #Validation data folder
+output_folder = r'C:\Users\UAB\data\Normalized'
 
-image_folder = 'MRimg'
-seg_folder = 'Segment'
+image_folder = 'MR'
+seg_folder = 'Seg'
 
 #names for corresponding files
 oriprefix = 'MR_' # MR image extension
@@ -36,6 +36,11 @@ count = 0
 subdir, dirs, files = os.walk(input_folder).__next__()
 files = [k for k in files if segprefix in k]
 
+files = []
+
+for root, dirs, files in os.walk(input_folder):
+    for filename in files:
+        files.append(filename)
 #make directory if doesn't exist
 if not os.path.exists(output_folder):
 	print('making directory')
@@ -47,7 +52,7 @@ for filename in tqdm(files):
 	if segprefix in filename:
 		#try:
 			#load MR image files
-			img = nib.load(input_folder+'/'+image_folder+'/'+filename[:strremove]+oriprefix)
+			img = nib.load(input_folder+'\\'+image_folder+'\\'+filename[:strremove])
 			data = img.get_data()
 
 			#pre-process

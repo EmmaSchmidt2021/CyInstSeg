@@ -25,7 +25,7 @@ from tensorflow.keras.optimizers import Adam
 from _3ch_instanceCystSeg_train_unet import get_unet
 
 #path = r"C:\Users\UAB\CyInstSeg"#-----------
-path = r"C:\Users\UAB\CyInstSeg"
+path = r"C:\Users\UAB\CyInstSeg\Normalized_trial\normalized"
 #path = r"C:\Users\UAB\CyInstSeg\Resized\Training\NII Images"
 #path = r"C:\Users\schmi\CyInstSeg\Resized\Training\TIFF"
 modelname1 = 'instanceCystSeg_modelWeights_3ch_t001'

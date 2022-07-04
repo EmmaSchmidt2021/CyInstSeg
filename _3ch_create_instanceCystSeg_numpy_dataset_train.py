@@ -19,21 +19,21 @@ print("libraries imported")
 
 
 #Edit the following two...
-input_folder=r'C:\Users\UAB\CyInstSeg\Resized\Training' #Training data folder
-output_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training_Output'
+input_folder=r'C:\Users\UAB\data\Normalized' #Training data folder
+output_folder = r'C:\Users\UAB\data\Normalized'
 
-image_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training\NII Images'
-seg_folder = r'C:\Users\UAB\CyInstSeg\Resized\Training\NII Segments'
+image_folder = 'MR'
+seg_folder = 'Seg'
 
 #names for corresponding files
-oriprefix = 'MR' # MR image extension
+oriprefix = 'M' # MR image extension
 segprefix = 'K' # Kidney segmentation extension
 cystprefix = 'CY' # Edge-Core segmentation extension
 strremove = -len(segprefix)
 
 #CHANGE MADE HERE THAT NEEDS TO BE ADDRESSED WHEN THE LARGER SET IS READY
-Scan = 250
-Scan2 = 250
+Scan = 256
+Scan2 = 256
 
 count = 0
 subdir, dirs, files = os.walk(input_folder).__next__()
@@ -50,7 +50,7 @@ for filename in tqdm(files):
 	if segprefix in filename:
 		#try:
 			#load MR image files
-			img = nib.load(input_folder+'/'+image_folder+'/'+filename[:strremove]+oriprefix)
+			img = nib.load(r"C:\Users\UAB\data\Normalized\MR\K_MR_170121_3_168_L_M.nii")
 			data = img.get_data()
 
 			#pre-process - convert to float 32 and threshold to 99th percentile
@@ -59,16 +59,16 @@ for filename in tqdm(files):
 			data[data>255] = 255
 			
 			#load kidney seg file and pre-process
-			segimg = nib.load(input_folder+'/'+seg_folder+'/'+filename)
+			segimg = nib.load(r"C:\Users\UAB\data\Normalized\Seg\K_170121_3_168_L_M_K.nii")
 			segdata = segimg.get_data()
 			segdata = np.asarray(segdata).astype(np.float32)
 
 			#load up cyst edge file (background==0, cysts==1, edges==2)
-			cystimg = nib.load(input_folder+'/'+seg_folder+'/'+filename[:strremove]+cystprefix)
+			cystimg = nib.load(r"C:\Users\UAB\data\Normalized\Seg\CY_170121_3_168_L_C.nii")
 			cystdata = cystimg.get_data()
 			cystdata = np.asarray(cystdata).astype(np.float32)
 
-			aslice = np.zeros(shape=[Scan,Scan2,4],dtype='float32')
+			dataslice = np.zeros(shape=[Scan,Scan2,4],dtype='float32')
 
 			#format all to same size
 			for io in range(0,np.shape(segdata)[2]): 
@@ -95,7 +95,7 @@ for filename in tqdm(files):
 				dataslice[:,:,3] = segslice
 
 				#save out as numpy files
-				np.save(output_folder+filename[:strremove]+'slice_'+str(io)+'.npy',dataslice)
-				np.save(output_folder+filename[:strremove]+'slice_'+str(io)+'_mask.npy',cystslice)
+				np.save(output_folder+'normalized_TEST_'+'slice_'+str(io)+'.npy',dataslice)
+				np.save(output_folder+'normalized_TEST_'+'slice_'+str(io)+'_mask.npy',cystslice)
 
 print('done')

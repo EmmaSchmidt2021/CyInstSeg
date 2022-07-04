@@ -140,9 +140,16 @@ def convert_NPY_NII(ROI_list):
         nib.save(nifti_file, os.path.join(final_path, "%s" %new_fname))
 
 
-    print("complete --- nice job")
+     print("complete --- nice job")
     #%%
     
-    
-this_list = gather_filenames(raw_path)
+raw_path =r'C:\Users\UAB\CyInstSeg\Normalized_trial'
+    import os
+    for root, dirs, files in os.walk(os.path.normpath(raw_path), topdown=True):
+        for name in files:
+            #print(os.path.join(root, name))
+            this_list.append(os.path.join(root, name))
+
 convert_NPY_NII(this_list)
+
+#%%

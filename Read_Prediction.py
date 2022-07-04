@@ -9,14 +9,14 @@ Created on Mon Mar  7 14:50:56 2022
 #https://lukas-snoek.com/NI-edu/fMRI-introduction/week_1/python_for_mri.html
 
 import numpy as np
-from PIL import Image as img
+from PIL import Image 
 import matplotlib.pyplot as plt
 import nibabel as nib
 
-imgM = nib.load(r"C:\Users\UAB\Successful Predictions and new images\105005_0_84_L_M.nii")
-imgK = nib.load(r"C:\Users\UAB\Successful Predictions and new images\105005_0_84_L_M_K.nii") 
-imgC = nib.load(r"C:\Users\UAB\Successful Predictions and new images\105005_0_84_L_C.nii")
-imgPred=nib.load(r"C:\Users\UAB\Successful Predictions and new images\105005_0_84_L__instanceCystSeg_modelWeights_3ch_t001CY_PREDICTION.nii")
+imgM = nib.load(r"C:\Users\UAB\data\512_AllNII\105005_1_99_R_M.nii")
+imgK = nib.load(r"C:\Users\UAB\data\NII_Binarized\101934_1_96_L_M_K.nii") 
+imgC = nib.load(r"C:\Users\UAB\CyInstSeg\Normalized_trial\normalized\Norm_105005_0_84_L_C.nii")
+imgPred=nib.load(r"C:\Users\UAB\data\NII_Binarized\Predictions saved\101934_1_96_R_M_PREDICTION_10_epoch.nii")
 print(type(imgM))
 print(imgM.shape)
 
@@ -40,7 +40,7 @@ print(type(imgK_data))
 print(imgK_data.shape)
 
 
-mid_slice_K = imgK_data[:,:,60]
+mid_slice_K = imgK_data[:,:,50]
 print(mid_slice_K.shape)
 plt.imshow(mid_slice_K.T, cmap='gray')
 
@@ -66,7 +66,7 @@ print(type(imgPred_data))
 print(imgPred_data.shape)
 
 
-mid_slice_P2 = imgPred_data[:,:,180]
+mid_slice_P2= imgPred_data[:,:,50]
 print(mid_slice_P2.shape)
 plt.imshow(mid_slice_P2.T, cmap='gray')
 
@@ -172,3 +172,87 @@ x_, y_ = retrieve_images_and_segmentations(data_path, images, segmentations) #TO
 visualise_data(x_,y_)
 
 #%%
+testimg = np.load(r"C:\Users\UAB\CyInstSeg\cyst_mask.npy")
+testMR = np.load(r"C:\Users\UAB\CyInstSeg\data_normalized.npy")
+
+
+testMR_slice = testMR[:,:,2]
+
+plt.imshow(testimg, cmap='gray')
+plt.show()
+
+#%%
+img = nib.load(r"C:\Users\UAB\CyInstSeg\Normalized_trial\105005_0_84_L_M.nii")
+data = img.get_data()
+test_slice = data[:,:,50]
+plt.imshow(test_slice, cmap='gray')
+
+			#pre-process - convert to float 32 and threshold to 99th percentile
+			data=np.asarray(data).astype(np.float32)
+			data = data/np.percentile(data,99) * 255
+			data[data>255] = 255
+
+test_slice = data[:,:,50]
+plt.imshow(test_slice, cmap='gray')
+
+
+converted_array = np.array(data, dtype=np.float32)
+affine = np.eye(4)
+nifti_file = nib.Nifti1Image(converted_array, affine)
+final_path = r'C:\Users\UAB\CyInstSeg\Normalized_trial\normalized'
+new_fname = 'Norm_105005_0_84_L_M.nii'
+nib.save(nifti_file, os.path.join(final_path, "%s" %new_fname))
+#%%
+mormalized = np.where(imgK_data> 1, 1, imgK_data)
+# create loop to change all of the kidney segmentation masks to the 0-1 range
+from keras.models import Sequential, load_model
+import os
+import numpy as np
+import nibabel as nib
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from skimage import measure
+from skimage.transform import resize
+from keras_unet.metrics import dice_coef
+from keras_unet.models import custom_unet
+from keras_unet.losses import jaccard_distance
+from sklearn.model_selection import train_test_split
+from PIL import Image
+from PIL import ImageOps
+import fnmatch
+import nibabel as nib
+import shutil
+%matplotlib inline
+
+
+def gather_set(data_path, phrase):
+    set_of = []
+    path = data_path + '\\'
+    for f in os.listdir(data_path):
+      if phrase in f:
+        set_of.append(f)
+      else:
+        continue
+    set_of = np.array(set_of)
+
+    indices = np.array(range(len(set_of))) # we will use this in the next step.
+
+    return set_of
+
+data_path = r'C:\Users\UAB\data\512_AllNII'
+Kimg = gather_set(data_path, '_K')
+
+
+for i in range(len(seg_list)):
+    segment = nib.load(data_path+seg_list[i])
+    seg_data = segement.get_fdata()
+    binarized = np.where(seg_data>1,1,seg_data)
+    affine = np.eye(4)
+    nifti_file = nib.Nifti1Image(binarized, affine)
+    nib.save(nifti_file, os.path.join(final_path, "%s" %new_fname))
+    
+    
+    
+    
+    
+    
