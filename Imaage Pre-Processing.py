@@ -166,7 +166,7 @@ segmentations = np.array(segmentations)
 
 indices = np.array(range(len(images))) # we will use this in the next step.
 #%%
-
+import os
 def gather_set(data_path, phrase):
     set_of = []
     path = data_path + '\\'
@@ -175,11 +175,12 @@ def gather_set(data_path, phrase):
         set_of.append(f)
       else:
         continue
-    set_of = np.array(set_of)
+    #set_of = np.array(set_of)
 
     indices = np.array(range(len(set_of))) # we will use this in the next step.
 
     return set_of
+
 data_path = r'C:\Users\UAB\data\512_AllNII'
 final_path = r'C:\Users\UAB\data\NII_Binarized'
 kidney_non = gather_set(data_path, '_K')
