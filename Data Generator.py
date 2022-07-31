@@ -9,11 +9,6 @@ Created on Thu Jul 28 15:56:15 2022
 import os
 import numpy as np
 import keras
-#%%
-
-
-import numpy as np
-import keras
 import tensorflow
 
 class DataGenerator(tensorflow.keras.utils.Sequence):
@@ -95,4 +90,19 @@ for i in images:
 
 labels = list(map(d.get, images))
 
-c = {images[i]:labels[i] for i in range(len(images))}
+partition = {images[i]:labels[i] for i in range(len(images))}
+
+#%%
+from sklearn.model_selection import train_test_split
+train, val = train_test_split(list(partition.keys()),train_size = 0.8)
+set_dict = {'train':train, 'validation':val}
+
+
+#%%
+params = {'dim': (512,512,96),
+          'batch_size': 12,
+          'n_classes': 2,
+          'n_channels': 1,
+          'shuffle': True}
+training_generator = DataGenerator(set_dict['train'], labels, **params)
+validation_generator = DataGenerator(set_dict['validation'], labels, **params)
