@@ -78,31 +78,78 @@ def gather_set(data_path, phrase):
 
     return set_of
 #%%
-img_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data\images"
-lab_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data\labels"
-images = gather_set(img_path, '_M')
-labels = gather_set(lab_path, '_K')
+data_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data"
+
+images = gather_set(data_path, '_M')
+labels = gather_set(data_path, '_K')
 
 d = {}
 for i in images:
     if i not in d:
         d[i] = len(d)
 
-labels = list(map(d.get, images))
+labels_mapping = list(map(d.get, images))
 
-partition = {images[i]:labels[i] for i in range(len(images))}
+labels = {images[i]:labels_mapping[i] for i in range(len(images))}
+print(list(labels.items())[:4])
 
 #%%
 from sklearn.model_selection import train_test_split
 train, val = train_test_split(list(partition.keys()),train_size = 0.8)
-set_dict = {'train':train, 'validation':val}
+partition = {'train':train, 'validation':val}
 
-
+print(list(partition.items())[:4])
 #%%
-params = {'dim': (512,512,96),
+params = {'dim': (512,512,1),
           'batch_size': 12,
           'n_classes': 2,
           'n_channels': 1,
           'shuffle': True}
-training_generator = DataGenerator(set_dict['train'], labels, **params)
-validation_generator = DataGenerator(set_dict['validation'], labels, **params)
+training_generator = DataGenerator(partition['train'], labels, **params)
+validation_generator = DataGenerator(partition['validation'], labels, **params)
+
+#%% translate multi slice stacks to single files
+
+
+import numpy as np
+import os 
+
+
+
+def gather_set(data_path, phrase):
+    set_of = []
+    path = data_path + '\\'
+    for f in os.listdir(data_path):
+      if phrase in f:
+        set_of.append(f)
+      else:
+        continue
+    #set_of = np.array(set_of)
+
+    indices = np.array(range(len(set_of))) # we will use this in the next step.
+
+    return set_of
+#%%
+data_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data"
+
+images = gather_set(data_path, '_M.')
+labels = gather_set(data_path, '_K')
+
+#%%
+new_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data\Single Images"
+for i in range(len(images)):
+    working_img = np.load(data_path + '\\' + images[i])
+    file_name = images[i][:-5]
+    for j in range(working_img.shape[-1]):
+        save_slice = working_img[:,:,j]
+        new_fname = str(file_name + str(j) +'_M')
+        np.save(os.path.join(new_path, new_fname), save_slice)
+        
+for i in range(len(labels)):
+    working_img = np.load(data_path + '\\' + labels[i])
+    file_name = labels[i][:-7]
+    for j in range(working_img.shape[-1]):
+        save_slice = working_img[:,:,j]
+        new_fname = str(file_name + str(j) +'_K')
+        np.save(os.path.join(new_path, new_fname), save_slice)
+        
