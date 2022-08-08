@@ -152,4 +152,36 @@ for i in range(len(labels)):
         save_slice = working_img[:,:,j]
         new_fname = str(file_name + str(j) +'_K')
         np.save(os.path.join(new_path, new_fname), save_slice)
-        
+#%%
+from numpy import newaxis
+new_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data\ThirdDim"
+data_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data"
+
+images = gather_set(data_path, '_M.')
+labels = gather_set(data_path, '_K')
+
+
+for i in range(len(images)):
+    working_img = np.load(data_path + '\\' + images[i])
+    file_name = images[i][:-4]
+    transformed = working_img[:,:,newaxis]
+    np.save(os.path.join(new_path, file_name), transformed)
+
+    
+for i in range(len(labels)):
+    working_img = np.load(data_path + '\\' + labels[i])
+    file_name = labels[i][:-4]
+    transformed = working_img[:,:,newaxis]
+    np.save(os.path.join(new_path, file_name), transformed)
+    
+    
+#%%
+seg_list = gather_set(new_path, '_K')
+final_path = r"C:\Users\UAB\Kidney-Segmentation-Jupyter\data\ThirdDim\Binary Masks"
+
+
+for i in range(len(seg_list)):
+    seg_data = np.load(data_path+"\\"+seg_list[i])
+    file_name = seg_list[i][:-4]
+    binarized = np.where(seg_data>1,1,seg_data)
+    np.save(os.path.join(final_path, file_name), binarized)
